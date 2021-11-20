@@ -1,6 +1,32 @@
 <script>
 
 import { page } from "$app/stores";
+import supabase from "$lib/db.js";
+
+let email_success_1 = false;
+let email_success_2 = false;
+
+async function addEmail(e) {
+
+let formData = new FormData(e.target);
+
+console.log(formData.get('email'));
+
+const { data, error } = await supabase
+  .from('signups')
+  .insert([
+    { email: formData.get('email')}
+  ])
+
+if (data) {
+  console.log(data);
+  e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
+  return data;
+}
+else {
+  console.log(error);
+}
+}
 
 </script>
 <h1>Realizing Desired Future States Together</h1>
@@ -29,14 +55,18 @@ import { page } from "$app/stores";
 <p>The vision of this tool is sort of like a crowdsourced Stack Overflow, for helping people and ourselves figure out what we're trying to do.  It doesn't only need to be used for world-changing projects.  For example, one of the first use cases was helping my partner think through why she wanted a car — and get down to the very specific "in order to", of "have a convenient way to go on weekend trips."  That was her job-to-be-done — not driving to work, not going to the grocery store, not taking kids to soccer practice.  Just the weekend car trips.  And once you have that clarity, it can help you consider a topic in new ways.</p>
 <p>Interested?  Want to explore the possibilities and help bring that to life?</p>
 <p>Enter your email, and you'll be part of the things to come.</p>
-<input type="email">
-<button>Submit</button>
+<form id="1" on:submit|preventDefault={addEmail}>
+<input name="email" type="email">
+<button>Submit</button>{#if email_success_1}<p style="color: green;">Success!</p>{/if}
+</form>
 <p>The second thing this page is demonstrating, is a <strong>single node of a bigger picture</strong> — a picture where any project/vision, can start with a page as simple as this, so initiatiors can share those ideas and visions with others, expand the possibility space, and create desired future states together.</p>
 <p>So if you have something in mind, spin up your own page to tell people about it.</p>
 <p>You'll get to edit all the page content yourself, include custom HTML/CSS/JS, own the code — and it comes pre-built with a email form like the one above, so people can sign-up to get updates about your project, and you can do things with those emails like invite them to a Slack/Discord community for further steps.</p>
 <p>Interested in <em>that</em> big picture project?  Want to explore the possibilities and help bring it to life as well?</p>
 <p>Enter your email, like you did above.</p>
-<input type="email">
-<button>Submit</button>
+<form id="2" on:submit|preventDefault={addEmail}>
+<input name="email" type="email">
+<button>Submit</button>{#if email_success_2}<p style="color: green;">Success!</p>{/if}
+</form>
 <p>This is how it would work on any given page (at least, to start).</p>
 <p>Want to bring your project to life?  Share your vision, invite others to take part, include a form so they can leave their contact emails.  And whoever's interested, start building it together.</p>
