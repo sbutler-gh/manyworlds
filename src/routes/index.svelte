@@ -29,6 +29,7 @@ else {
 }
 
 </script>
+<div class="main">
 <h1>Realizing Desired Future States Together</h1>
 <p>Today, there are lots of ways people try to make change in the world.</p>
 <p>There are also many barriers to realizing new visions.</p>
@@ -70,3 +71,7 @@ else {
 </form>
 <p>This is how it would work on any given page (at least, to start).</p>
 <p>Want to bring your project to life?  Share your vision, invite others to take part, include a form so they can leave their contact emails.  And whoever's interested, start building it together.</p>
+</div>
+<style>
+    .main{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";color:#444}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: dark){body{color:#ccc;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
+</style>
