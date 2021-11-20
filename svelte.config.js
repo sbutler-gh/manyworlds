@@ -1,10 +1,13 @@
-import cloudflare from '@sveltejs/adapter-cloudflare';
+// svelte.config.js
+import adapter from '@sveltejs/adapter-static';
 
 export default {
 	kit: {
-		target: '#svelte',
-		adapter: cloudflare({
-			// any esbuild options
+		adapter: adapter({
+			// default options are shown
+			pages: 'build',
+			assets: 'build',
+			fallback: null
 		})
 	}
 };
