@@ -1,15 +1,21 @@
 <script>
+import { goto } from "$app/navigation";
+import { onMount } from "svelte";
+
+
 
     import { page } from "$app/stores";
     import supabase from "$lib/db.js";
 
     // add an html preview
     // add a slug button
+
+    let current_slugs;
     
     let page_success = false;
     let html_preview = false;
     let live_preview = false;
-    let your_slug = "your_slug";
+    let your_slug = "";
     let html_content = `
 <div class="main">
 <h1>My Big Vision</h1>
@@ -25,6 +31,30 @@
 <style>
     .main{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";color:#444}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: dark){body{color:#ccc;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
 </style>`;
+
+let slug_taken = false;
+
+    onMount(async () => {
+
+    // console.log(slug);
+
+    const { data, error } = await supabase
+    .from('pages')
+    .select("slug")
+
+    if (data) {
+      current_slugs = [];
+        for (var i = 0; i < data.length; i++) {
+          current_slugs.push(data[i]["slug"])
+        }
+        // current_slugs = data;
+        console.log(current_slugs);
+    }
+    else {
+        console.log(error);
+    }
+
+    });
     
     async function addPage(e) {
     
@@ -42,11 +72,17 @@
       console.log(data);
       page_success = true;
     //   e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-      return data;
+    goto(`/${formData.get('slug')}`);
+      // return data;
     }
     else {
       console.log(error);
     }
+    }
+
+    function validateSlug() {
+      console.log(your_slug);
+      current_slugs.includes(your_slug) ? (slug_taken = true) : (slug_taken = false);
     }
 
     function htmlPreviewToggle() {
@@ -63,7 +99,12 @@
     <div class="main">
     <form on:submit|preventDefault={addPage}>
         <label>Add a slug for your page.  (e.g. <strong>manyworlds.pages.dev/{your_slug}</strong>)</label><br>
-        <input name="slug" bind:value={your_slug} type="text" onkeypress="return event.charCode != 32"><br><br>
+        <input name="slug" bind:value={your_slug} placeholder="my-project-name" type="text" on:input={validateSlug} onkeypress="return event.charCode != 32">
+        {#if slug_taken}
+        <p style="color: red; font-size: 14px;">Already taken.  Try another.</p>
+        {/if}
+        <br>
+        <br>
         <label>Your Page HTML</label>        {#if live_preview}
         <button type="button" on:click={livePreviewToggle}>Hide Live Preview</button>
         {:else}
@@ -86,8 +127,9 @@
         {/if}
 
         <!-- <button type="button" on:click={htmlPreviewToggle}>Toggle Preview</button> -->
-    
+        {#if !slug_taken}
         <button style="display: block; margin: auto; padding: 0.5rem 2rem; font-size: 16px; margin-top: 20px;">Create Page</button>{#if page_success}<p style="color: green;">Success!</p>{/if}
+        {/if}
     </form>
     </div>
 <style>

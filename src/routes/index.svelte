@@ -63,6 +63,7 @@ else {
 <p>The second thing this page is demonstrating, is a <strong>single node of a bigger picture</strong> — a picture where any project/vision, can start with a page as simple as this, so initiatiors can share those ideas and visions with others, expand the possibility space, and create desired future states together.</p>
 <p>So if you have something in mind, spin up your own page to tell people about it.</p>
 <p>You'll get to edit all the page content yourself, include custom HTML/CSS/JS, own the code — and it comes pre-built with a email form like the one above, so people can sign-up to get updates about your project, and you can do things with those emails like invite them to a Slack/Discord community for further steps.</p>
+<p><em>(NOTE: When making your own page, the pre-built email form functionality is still in development)</em></p>
 <p>Interested in <em>that</em> big picture project?  Want to explore the possibilities and help bring it to life as well?</p>
 <p>Enter your email, like you did above.</p>
 <form id="2" on:submit|preventDefault={addEmail}>
