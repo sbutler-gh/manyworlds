@@ -1,7 +1,7 @@
    
 import supabase from '$lib/db';
 import { dev } from '$app/env';
-import { session_store, user_store } from '$lib/stores';
+import { user_store } from '$lib/stores';
 
 
 
