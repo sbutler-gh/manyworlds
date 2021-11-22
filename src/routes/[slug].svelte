@@ -118,20 +118,27 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 
         var formData = new FormData(e.target);
 
-      const { user, error } = await supabase.auth.signUp
-      ({ email: formData.get('email'), password: formData.get('password') })
+        const response = await fetch('../endpoints/signup', {
+      method: 'post',
+      body: formData
+    })
 
-      if (user) {
-        console.log(user);
-        console.log('user created');
-        $user_store = user;
-        localStorage.setItem('user', JSON.stringify(user));
+        if (response.ok) {
+        let data = await response.json();
+        // console.log(user);
+        // console.log('user created');
+        $user_store = data.user;
+        // $user_store = $user_store;
+        // let user = $user_store;
+        console.log(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
         return addUserToPage();
-      }
-      else {
+        }
+
+        else {
         console.log(error);
         signup_error = error;
-      }
+        }
     }
 
 //     async function addEmail(e) {

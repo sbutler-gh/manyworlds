@@ -85,27 +85,50 @@ let slug_taken = false;
       }
 
     }
+
+  //   if (e.submitter.innerText == "Sign Up") {
+  //   const response = await fetch('/signup', {
+  //     method: 'post',
+  //     body: formData
+  //   })
+  //   if (response.ok) {
+  //   let data = await response.json();
+  //   console.log(data);
+  //   displaySignInForm = false;
+  //   auth_response = data;
+  //   $session = [];
+  //   $session.user = data.user;
+  //   $session.id = data.user.id;
+  //   $session.email = data.user.email;
+  //   }
+  // }
     
     async function submitForm(e) {
     
     let formData = new FormData(e.target);
     
-    if (formData.get('email')) {
-      const { user, error } = await supabase.auth.signUp
-      ({ email: formData.get('email'), password: formData.get('password') })
+    if (!$user_store?.email) {
 
+      const response = await fetch('../endpoints/signup', {
+      method: 'post',
+      body: formData
+    })
 
-      if (user) {
-        console.log(user);
-        console.log('user created');
-        $user_store = user;
-        localStorage.setItem('user', JSON.stringify(user));
-        return createNewPage(e);
-      }
-      else {
-        console.log(error);
-        signup_error = error;
-      }
+    if (response.ok) {
+      let data = await response.json();
+      // console.log(user);
+      // console.log('user created');
+      $user_store = data.user;
+      // let user = $user_store;
+      console.log(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      return createNewPage(e);
+    }
+
+    else {
+      console.log(error);
+      signup_error = error;
+    }
     }
 
     else {
