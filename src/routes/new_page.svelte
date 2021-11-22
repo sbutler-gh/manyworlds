@@ -119,6 +119,7 @@ let slug_taken = false;
       let data = await response.json();
       // console.log(user);
       // console.log('user created');
+      console.log(data);
       $user_store = data.user;
       // let user = $user_store;
       console.log(data.user);
