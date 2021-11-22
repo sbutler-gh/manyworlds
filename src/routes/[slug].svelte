@@ -11,6 +11,8 @@ import { user_store } from "$lib/stores";
     export let slug;
     let this_page;
 
+    let page_has_user;
+
     let edit = false;
 
     let html_content;
@@ -19,7 +21,10 @@ import { user_store } from "$lib/stores";
 
         console.log(slug);
 
-        fetchPageContent();
+        fetchPageContent()
+        .then(() => {
+            checkIfPageHasUser();
+        })
 
     });
 
@@ -42,6 +47,23 @@ import { user_store } from "$lib/stores";
         }
     }
 
+    async function checkIfPageHasUser() {
+        const { data, error } = await supabase
+        .from('users_pages')
+        .select("*")
+        .match({user_id: $user_store?.id, page_id: this_page.id});
+
+        if (data.length > 0) {
+            page_has_user = true;
+        }
+        else {
+            page_has_user = false;
+        }
+        // else if (error) {
+        //     console.log(error);
+        // }
+    }
+
     async function updatePage() {
 
         const { data, error } = await supabase
@@ -62,27 +84,42 @@ import { user_store } from "$lib/stores";
         }
     }
 
-    async function addEmail(e) {
-
-        let formData = new FormData(e.target);
-
-        console.log(formData.get('email'));
-
+    async function addUserToPage() {
         const { data, error } = await supabase
-        .from('signups')
+        .from('users_pages')
         .insert([
-            { email: formData.get('email')}
+            { user_id: $user_store.id, page_id: this_page.id}
         ])
 
         if (data) {
-        console.log(data);
-        // e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-        return data;
+            console.log(data);
         }
         else {
-        console.log(error);
+            console.log(error);
         }
-}
+    }
+
+//     async function addEmail(e) {
+
+//         let formData = new FormData(e.target);
+
+//         console.log(formData.get('email'));
+
+//         const { data, error } = await supabase
+//         .from('signups')
+//         .insert([
+//             { email: formData.get('email')}
+//         ])
+
+//         if (data) {
+//         console.log(data);
+//         // e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
+//         return data;
+//         }
+//         else {
+//         console.log(error);
+//         }
+// }
 </script>
 <script context="module">
     	export async function load({ page, fetch, session, stuff }) {
@@ -125,4 +162,7 @@ import { user_store } from "$lib/stores";
 {/if}
 {#if html_content}
 {@html html_content}
+{/if}
+{#if page_has_user == false}
+<button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={addUserToPage}>Sign Up for Updates</button>
 {/if}
