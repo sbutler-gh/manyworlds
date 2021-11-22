@@ -3,10 +3,15 @@ import { onMount } from "svelte";
 import supabase from "$lib/db.js";
 import { page } from "$app/stores";
 import CreatePageButton from "$lib/components/CreatePageButton.svelte"
+import EditPageButton from "$lib/components/EditPageButton.svelte"
+import { user_store } from "$lib/stores";
 
 
 
     export let slug;
+    let this_page;
+
+    let edit = false;
 
     let html_content;
 
@@ -14,6 +19,15 @@ import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 
         console.log(slug);
 
+        fetchPageContent();
+
+    });
+
+    function toggleEditPage() {
+        edit ? edit = false : edit = true;
+    }
+
+    async function fetchPageContent() {
         const { data, error } = await supabase
         .from('pages')
         .select("*")
@@ -21,12 +35,32 @@ import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 
         if (data) {
             html_content = data[0].html;
+            this_page = data[0];
         }
         else {
             console.log(error);
         }
+    }
 
-    });
+    async function updatePage() {
+
+        const { data, error } = await supabase
+        .from('pages')
+        .update([
+          { "html": html_content}
+        ])
+        .eq("slug", slug)
+
+        if (data) {
+            console.log(data);
+            this_page = data[0];
+            html_content = data[0].html;
+            edit = false;
+        }
+        else {
+            console.log(error);
+        }
+    }
 
     async function addEmail(e) {
 
@@ -76,6 +110,19 @@ import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 	}
 </script>
 <CreatePageButton></CreatePageButton>
+{#if this_page?.user_id == $user_store?.id}
+<button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={toggleEditPage}>Edit Page</button>
+{/if}
+{#if edit}
+<div style="display: flex">
+    <textarea required name="html" bind:value={html_content} style="width: 50%; height: 400px;"></textarea><br>
+
+    <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
+    {@html html_content}
+  </div>
+  </div>
+  <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={updatePage}>Save Changes</button>
+{/if}
 {#if html_content}
 {@html html_content}
 {/if}

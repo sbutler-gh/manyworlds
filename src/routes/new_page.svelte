@@ -1,8 +1,8 @@
 <script>
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
-
-
+import { user_store } from "$lib/stores";
+import SignUpForm from "$lib/components/SignUpForm.svelte"
 
     import { page } from "$app/stores";
     import supabase from "$lib/db.js";
@@ -11,6 +11,8 @@ import { onMount } from "svelte";
     // add a slug button
 
     let current_slugs;
+
+    let signup_error = false;
     
     let page_success = false;
     let html_preview = false;
@@ -55,28 +57,58 @@ let slug_taken = false;
     }
 
     });
+
+    // async function createAccount(e) {
+
+    // }
+
+    async function createNewPage(e) {
+
+    let formData = new FormData(e.target);
     
-    async function addPage(e) {
+        const { data, error } = await supabase
+        .from('pages')
+        .insert([
+          { slug: formData.get('slug'), html: formData.get('html'), user_id: $user_store.id}
+        ])
+      
+      if (data) {
+        console.log(data);
+        page_success = true;
+      //   e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
+      goto(`/${formData.get('slug')}`);
+        // return data;
+      }
+      else {
+        console.log(error);
+      }
+
+    }
+    
+    async function submitForm(e) {
     
     let formData = new FormData(e.target);
     
-    console.log(formData.get('email'));
-    
-    const { data, error } = await supabase
-      .from('pages')
-      .insert([
-        { slug: formData.get('slug'), html: formData.get('html')}
-      ])
-    
-    if (data) {
-      console.log(data);
-      page_success = true;
-    //   e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-    goto(`/${formData.get('slug')}`);
-      // return data;
+    if (formData.get('email')) {
+      const { user, error } = await supabase.auth.signUp
+      ({ email: formData.get('email'), password: formData.get('password') })
+
+
+      if (user) {
+        console.log(user);
+        console.log('user created');
+        $user_store = user;
+        localStorage.setItem('user', JSON.stringify(user));
+        return createNewPage(e);
+      }
+      else {
+        console.log(error);
+        signup_error = error;
+      }
     }
+
     else {
-      console.log(error);
+      createNewPage(e);
     }
     }
 
@@ -97,15 +129,16 @@ let slug_taken = false;
     
     </script>
     <div class="main">
-    <form on:submit|preventDefault={addPage}>
+    <form on:submit|preventDefault={submitForm}>
         <label>Add a slug for your page.  (e.g. <strong>manyworlds.pages.dev/{your_slug}</strong>)</label><br>
-        <input name="slug" bind:value={your_slug} placeholder="my-project-name" type="text" on:input={validateSlug} onkeypress="return event.charCode != 32">
+        <input required name="slug" bind:value={your_slug} placeholder="my-project-name" type="text" on:input={validateSlug} onkeypress="return event.charCode != 32">
         {#if slug_taken}
         <p style="color: red; font-size: 14px;">Already taken.  Try another.</p>
         {/if}
         <br>
         <br>
-        <label>Your Page HTML</label>        {#if live_preview}
+        <label>Your Page HTML</label>
+        {#if live_preview}
         <button type="button" on:click={livePreviewToggle}>Hide Live Preview</button>
         {:else}
         <button type="button" on:click={livePreviewToggle}>Show Live Preview</button>
@@ -115,7 +148,7 @@ let slug_taken = false;
         {@html html_content}
         {:else}
         <div style="display: flex">
-        <textarea name="html" bind:value={html_content} style="width: 50%; height: 400px;"></textarea><br>
+        <textarea required name="html" bind:value={html_content} style="width: 50%; height: 400px;"></textarea><br>
 
         {#if live_preview}
         <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
@@ -126,6 +159,18 @@ let slug_taken = false;
         </div>
         {/if}
 
+        <br>
+
+        {#if !$user_store}
+        <SignUpForm></SignUpForm>
+        {/if}
+        
+        {#if signup_error}
+        <br>
+        <p style="color: red; font-size: 14px;">Error creating account: {signup_error}</p>
+        <br>
+        {/if}
+  
         <!-- <button type="button" on:click={htmlPreviewToggle}>Toggle Preview</button> -->
         {#if !slug_taken}
         <button style="display: block; margin: auto; padding: 0.5rem 2rem; font-size: 16px; margin-top: 20px;">Create Page</button>{#if page_success}<p style="color: green;">Success!</p>{/if}
