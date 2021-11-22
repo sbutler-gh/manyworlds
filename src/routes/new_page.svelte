@@ -161,7 +161,7 @@ let slug_taken = false;
 
         <br>
 
-        {#if !$user_store}
+        {#if !$user_store?.email}
         <SignUpForm></SignUpForm>
         {/if}
         
