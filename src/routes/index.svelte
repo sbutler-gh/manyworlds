@@ -4,6 +4,7 @@ import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import supabase from "$lib/db.js";
 import { now } from "svelte/internal";
+import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 
 let email_success_1 = false;
 let email_success_2 = false;
@@ -32,7 +33,7 @@ else {
 
 </script>
 <div class="main">
-  <a href="/new_page" style="text-decoration: none; cursor: pointer;"><button style="cursor: pointer; margin-left: auto; display: block;">+ Create Your Own Page</button></a>
+<CreatePageButton></CreatePageButton>
 <h1>Realizing Desired Future States Together</h1>
 <!-- <p>Today, there are lots of ways people try to make change in the world.</p>
 <p>There are also many barriers to realizing new visions.</p>

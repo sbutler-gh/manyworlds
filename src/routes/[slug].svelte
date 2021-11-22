@@ -2,6 +2,8 @@
 import { onMount } from "svelte";
 import supabase from "$lib/db.js";
 import { page } from "$app/stores";
+import CreatePageButton from "$lib/components/CreatePageButton.svelte"
+
 
 
     export let slug;
@@ -73,6 +75,7 @@ import { page } from "$app/stores";
 		// };
 	}
 </script>
+<CreatePageButton></CreatePageButton>
 {#if html_content}
 {@html html_content}
 {/if}
