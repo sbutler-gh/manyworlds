@@ -9,7 +9,7 @@ if (dev) {
 }
 else {
 variables = {
-    endpointPath: '/api/'
+    endpointPath: './endpoints/'
     };
 }
 
