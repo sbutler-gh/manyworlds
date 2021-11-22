@@ -3,6 +3,7 @@ import supabase from '$lib/db';
 
 
 export async function post(request) {
+  
 
     let { user, error } = await supabase.auth.signUp({
       email: request.body.get("email"),

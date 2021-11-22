@@ -110,7 +110,10 @@ let slug_taken = false;
     
     if (!$user_store?.email) {
 
-      const response = await fetch(`${variables.endpointPath}signup`, {
+      console.log('logging signup endpoint');
+      console.log('logging formdata')
+
+      const response = await fetch(`/signup`, {
       method: 'post',
       body: formData
     })
