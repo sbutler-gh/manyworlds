@@ -1,7 +1,7 @@
 <script>
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
-import { user_store } from "$lib/stores";
+import { user_store, user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte"
 
     import { page } from "$app/stores";
@@ -122,6 +122,9 @@ let slug_taken = false;
 
         if (data) {
             console.log(data);
+            // $user_pages_store = [];
+            $user_pages_store.push({'page_id': data[0].page_id});
+            console.log($user_pages_store);
         }
         else {
             console.log(error);

@@ -4,7 +4,8 @@ import supabase from "$lib/db.js";
 import { page } from "$app/stores";
 import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 import EditPageButton from "$lib/components/EditPageButton.svelte"
-import { user_store } from "$lib/stores";
+import { user_store, user_pages_store } from "$lib/stores";
+import SignUpForm from "$lib/components/SignUpForm.svelte";
 
 
 
@@ -12,6 +13,8 @@ import { user_store } from "$lib/stores";
     let this_page;
 
     let page_has_user;
+
+    let display_sign_up_form;
 
     let edit = false;
 
@@ -47,22 +50,32 @@ import { user_store } from "$lib/stores";
         }
     }
 
-    async function checkIfPageHasUser() {
-        const { data, error } = await supabase
-        .from('users_pages')
-        .select("*")
-        .match({user_id: $user_store?.id, page_id: this_page.id});
-
-        if (data.length > 0) {
+    function checkIfPageHasUser() {
+        console.log($user_pages_store);
+        if ($user_pages_store.some(page => page.page_id == this_page.id)) {
             page_has_user = true;
         }
         else {
             page_has_user = false;
         }
-        // else if (error) {
-        //     console.log(error);
-        // }
     }
+
+    // async function checkIfPageHasUser() {
+    //     const { data, error } = await supabase
+    //     .from('users_pages')
+    //     .select("*")
+    //     .match({user_id: $user_store?.id, page_id: this_page.id});
+
+    //     if (data?.length > 0) {
+    //         page_has_user = true;
+    //     }
+    //     else {
+    //         page_has_user = false;
+    //     }
+    //     // else if (error) {
+    //     //     console.log(error);
+    //     // }
+    // }
 
     async function updatePage() {
 
@@ -93,10 +106,32 @@ import { user_store } from "$lib/stores";
 
         if (data) {
             console.log(data);
+            $user_pages_store.push({'page_id': this_page.id});
+            page_has_user = true;
         }
         else {
             console.log(error);
         }
+    }
+
+    async function createUser(e) {
+
+        var formData = new FormData(e.target);
+
+      const { user, error } = await supabase.auth.signUp
+      ({ email: formData.get('email'), password: formData.get('password') })
+
+      if (user) {
+        console.log(user);
+        console.log('user created');
+        $user_store = user;
+        localStorage.setItem('user', JSON.stringify(user));
+        return addUserToPage();
+      }
+      else {
+        console.log(error);
+        signup_error = error;
+      }
     }
 
 //     async function addEmail(e) {
@@ -163,6 +198,11 @@ import { user_store } from "$lib/stores";
 {#if html_content}
 {@html html_content}
 {/if}
-{#if page_has_user == false}
+{#if $user_store?.id && page_has_user == false}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={addUserToPage}>Sign Up for Updates</button>
+{:else if !$user_store?.id}
+<form on:submit|preventDefault={createUser}>
+<SignUpForm></SignUpForm>
+<button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
+</form>
 {/if}
