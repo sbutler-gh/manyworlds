@@ -109,7 +109,7 @@ let slug_taken = false;
     
     if (!$user_store?.email) {
 
-      const response = await fetch('../endpoints/signup', {
+      const response = await fetch('./functions/signup', {
       method: 'post',
       body: formData
     })
