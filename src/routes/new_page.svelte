@@ -75,8 +75,9 @@ let slug_taken = false;
       if (data) {
         console.log(data);
         page_success = true;
+        addUserToPage(data[0].id)
       //   e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-      goto(`/${formData.get('slug')}`);
+        goto(`/${formData.get('slug')}`);
         // return data;
       }
       else {
@@ -110,6 +111,21 @@ let slug_taken = false;
     else {
       createNewPage(e);
     }
+    }
+
+    async function addUserToPage(id) {
+      const { data, error } = await supabase
+        .from('users_pages')
+        .insert([
+            { user_id: $user_store.id, page_id: id}
+        ])
+
+        if (data) {
+            console.log(data);
+        }
+        else {
+            console.log(error);
+        }
     }
 
     function validateSlug() {
