@@ -2,7 +2,8 @@
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
 import { user_store, user_pages_store } from "$lib/stores";
-import SignUpForm from "$lib/components/SignUpForm.svelte"
+import SignUpForm from "$lib/components/SignUpForm.svelte";
+import variables from "$lib/variables";
 
     import { page } from "$app/stores";
     import supabase from "$lib/db.js";
@@ -109,7 +110,7 @@ let slug_taken = false;
     
     if (!$user_store?.email) {
 
-      const response = await fetch('./functions/signup', {
+      const response = await fetch(`${variables.endpointPath}signup`, {
       method: 'post',
       body: formData
     })

@@ -118,7 +118,7 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 
         var formData = new FormData(e.target);
 
-        const response = await fetch('./functions/signup', {
+        const response = await fetch(`${variables.endpointPath}signup`, {
       method: 'post',
       body: formData
     })
