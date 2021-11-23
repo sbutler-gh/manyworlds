@@ -22,7 +22,10 @@ export async function post(request) {
     if (error) {
       return {
         status: 500,
-        body: error
+        body: {
+          user,
+          error
+        }
       }
     }
 

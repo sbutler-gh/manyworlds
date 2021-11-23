@@ -4,7 +4,7 @@ let variables;
 
 if (dev) {
     variables = {
-        endpointPath: './endpoints/'
+        endpointPath: '/'
       };
 }
 else {
