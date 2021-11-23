@@ -1,4 +1,9 @@
-import supabase from '$lib/db';
+// import supabase from '$lib/db';
+
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient( import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY, { fetch: fetch })
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post(request) {
@@ -16,19 +21,18 @@ export async function post(request) {
     
     if (error) {
       return {
-        status: error.status,
+        status: 500,
         body: error
       }
     }
 
     else {
-      console.log(user);
-    }
-  
-    return {
-      status: 200,
-      body: {
-        user
+
+      return {
+          status: 200,
+          body: {
+            user
+          }
+        }
       }
-    }
 	}
