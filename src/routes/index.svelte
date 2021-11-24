@@ -59,5 +59,5 @@ else {
 <!-- <p>You'll get to edit all the page content yourself, include custom HTML/CSS/JS, own the code — and it comes pre-built with a email form like the one above, so people can sign-up to get updates about your project, and you can do things with those emails like invite them to a Slack/Discord community for further steps.</p> -->
 </div>
 <style>
-    .main{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";color:#444}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: dark){body{color:#ccc;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
+    .main{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: light){.main{color: #444}} @media (prefers-color-scheme: dark){body{color:#ccc !important;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
 </style>
