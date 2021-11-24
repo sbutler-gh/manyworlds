@@ -25,11 +25,7 @@ import DOMPurify from 'dompurify';
 <h1>My Big Vision</h1>
 <p>This is my vision ...</p>
 <p>Interested?  Want to explore the possibilities and help bring that to life?</p>
-<p>Enter your email, and you'll be part of the things to come.</p>
-<!-- Email form — don't touch, unless you know what you're doing! -->
-<form id="1" on:submit|preventDefault={addEmail}>
-<input name="email" type="email">
-<button>Submit</button>
+<p>Hit the button below and you'll receive updates soon.</p>
 </form>
 </div>
 <style>
@@ -209,6 +205,7 @@ let slug_taken = false;
         {#if live_preview}
         <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
         {@html html_content}
+        <button type="button" style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
       </div>
         {/if}
         
