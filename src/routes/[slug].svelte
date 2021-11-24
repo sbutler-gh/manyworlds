@@ -118,7 +118,7 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 
         var formData = new FormData(e.target);
 
-        const response = await fetch(`${variables.endpointPath}signup`, {
+        const response = await fetch(`/signup`, {
       method: 'post',
       body: formData
     })
@@ -207,9 +207,41 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 {/if}
 {#if $user_store?.id && page_has_user == false}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={addUserToPage}>Sign Up for Updates</button>
+{:else if $user_store?.id && page_has_user == true}
+<button disabled style="margin: auto; display: block; margin-top: 20px; color: green" on:click|preventDefault={addUserToPage}>You're receiving updates for this project!</button>
+<p style="text-align: center; color: green;"></p>
 {:else if !$user_store?.id}
-<form on:submit|preventDefault={createUser}>
-<SignUpForm></SignUpForm>
-<button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
+<form class="guest-form" style="margin: auto; display: block;" on:submit|preventDefault={createUser}>
+    <h3>Sign Up for Updates</h3>
+    <label>Account Email</label><br>
+    <input name="email" placeholder="hey@email.com" type="email"><br><br>
+
+    <label>Password</label><br>
+    <input name="password" placeholder="Enter a strong password" type="text">
+    <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up</button>
 </form>
 {/if}
+
+<style>
+    @media only screen and (max-width: 800px) {
+        .guest-form {
+            width: 100% !important;
+            padding: 1rem;
+        }
+    }
+
+    .guest-form {
+        width: 40%;
+        background: #fafafa;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        font-style: "sans-serif";
+        margin: auto;
+    }
+
+    .guest-form input {
+        height: 20px;
+        width: 150px;
+    }
+</style>
