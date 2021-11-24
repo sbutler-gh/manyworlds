@@ -30,11 +30,33 @@
         }
     }
 
+    async function logOut() {
+
+    const response = await fetch(`/logout`, {
+    method: 'post'
+    })
+
+    if (response.ok) {
+    let data = await response.json();
+    console.log(data);
+    $user_store = [];
+    localStorage.removeItem('user');
+    }
+
+    else {
+    console.log(error);
+    // console.log(data);
+    // $user_store = [];
+    // localStorage.removeItem('user');
+    }
+}
+
 
 </script>
 <div class="login">
 {#if $user_store?.email}
 <p>{$user_store.email}</p>
+<button type="button" style="margin-left: auto; display: block; margin-right: 10%;" on:click|preventDefault={logOut}>Log Out</button>
 {:else}
 <button type="button" style="margin-left: auto; display: block; margin-right: 10%;" on:click|preventDefault={toggleLogIn}>
    {#if login_form == true}Back{:else}Log In{/if}
