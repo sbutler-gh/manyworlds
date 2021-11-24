@@ -4,6 +4,7 @@ import { onMount } from "svelte";
 import { user_store, user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
 import variables from "$lib/variables";
+import DOMPurify from 'dompurify';
 
     import { page } from "$app/stores";
     import supabase from "$lib/db.js";
@@ -66,11 +67,14 @@ let slug_taken = false;
     async function createNewPage(e) {
 
     let formData = new FormData(e.target);
+    formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
+
+    // let sanitized_html = DOMPurify.sanitize(formData.get('html'));
     
         const { data, error } = await supabase
         .from('pages')
         .insert([
-          { slug: formData.get('slug'), html: formData.get('html'), user_id: $user_store.id}
+          { slug: formData.get('slug'), html: formData.get('sanitized_html'), user_id: $user_store.id}
         ])
       
       if (data) {
@@ -170,9 +174,14 @@ let slug_taken = false;
     }
 
     function livePreviewToggle() {
-        live_preview == true ? (live_preview = false) : (live_preview = true);
+        live_preview == true ? (live_preview = false) : live_preview = true;
         console.log(html_preview);
+        html_content = DOMPurify.sanitize(html_content);
     }
+
+    // function editHTML() {
+    //   live_preview == true ? html_content = DOMPurify.sanitize(html_content) : null;
+    // }
     
     </script>
     <div class="main">

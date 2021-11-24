@@ -7,13 +7,14 @@
     "preview": "svelte-kit preview"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^1.8.0",
     "@sveltejs/adapter-static": "^1.0.0-next.21",
     "@sveltejs/kit": "next",
-    "svelte": "^3.42.6",
-    "@supabase/supabase-js": "^1.8.0"
+    "svelte": "^3.42.6"
   },
   "type": "module",
   "dependencies": {
-    "@sveltejs/adapter-cloudflare": "^1.0.0-next.2"
+    "@sveltejs/adapter-cloudflare": "^1.0.0-next.2",
+    "dompurify": "^2.3.3"
   }
 }
