@@ -10,23 +10,23 @@ let initialized = false;
 onMount(async () => {
     loadUserFromBrowserStorage()
     .then(async() => {
+
         if ($user_store?.id) {
 
-                const { data, error } = await supabase
-                .from('users_pages')
-                .select("page_id")
-                .match({user_id: $user_store?.id});
+            const response = await fetch(`/loaduserpages`, {
+            method: 'post',
+            body: $user_store?.id
+            })
 
-                if (data) {
-                    console.log(data);
-                    $user_pages_store = data;
-                }
-                else {
-                    console.log(error);
-                }
-                // else if (error) {
-                //     console.log(error);
-                // }
+        if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        $user_pages_store = data.data;
+        }
+
+        else {
+        console.log(error);
+        }
         }
 
         return initialized = true;
