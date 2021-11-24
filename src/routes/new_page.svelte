@@ -26,7 +26,6 @@ import DOMPurify from 'dompurify';
 <p>This is my vision ...</p>
 <p>Interested?  Want to explore the possibilities and help bring that to life?</p>
 <p>Hit the button below and you'll receive updates soon.</p>
-</form>
 </div>
 <style>
     .main{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";color:#444}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: dark){body{color:#ccc;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
