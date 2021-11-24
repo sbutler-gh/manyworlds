@@ -3,7 +3,6 @@
 import { user_store, user_pages_store } from "$lib/stores";
 import UserDisplay from "$lib/components/UserDisplay.svelte"
 import { onMount } from "svelte";
-import supabase from "$lib/db.js";
 
 let initialized = false;
 

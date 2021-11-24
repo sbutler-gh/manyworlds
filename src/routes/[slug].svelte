@@ -36,17 +36,21 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
     }
 
     async function fetchPageContent() {
-        const { data, error } = await supabase
-        .from('pages')
-        .select("*")
-        .eq('slug', slug);
 
-        if (data) {
-            html_content = data[0].html;
-            this_page = data[0];
+        const response = await fetch(`/fetchpagefromslug`, {
+            method: 'post',
+            body: slug
+            })
+
+        if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        html_content = data.data[0].html;
+        this_page = data.data[0];
         }
+
         else {
-            console.log(error);
+        console.log(error);
         }
     }
 

@@ -2,34 +2,11 @@
 
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
-import supabase from "$lib/db.js";
 import { now } from "svelte/internal";
 import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 
 let email_success_1 = false;
 let email_success_2 = false;
-
-async function addEmail(e) {
-
-let formData = new FormData(e.target);
-
-console.log(formData.get('email'));
-
-const { data, error } = await supabase
-  .from('signups')
-  .insert([
-    { email: formData.get('email')}
-  ])
-
-if (data) {
-  console.log(data);
-  e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-  return data;
-}
-else {
-  console.log(error);
-}
-}
 
 </script>
 <div class="main">
