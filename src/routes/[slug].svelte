@@ -64,19 +64,22 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
         }
     }
 
-    async function updatePage() {
+    async function upsertPage() {
 
-        const { data, error } = await supabase
-        .from('pages')
-        .update([
-          { "html": html_content}
-        ])
-        .eq("slug", slug)
+        var formData = new FormData();
+        formData.append('html_content', html_content);
+        formData.append('slug', slug);
 
-        if (data) {
+        const response = await fetch(`/upsertpage`, {
+            method: 'post',
+            body: formData
+            })
+
+        if (response.ok) {
+            let data = await response.json();
             console.log(data);
-            this_page = data[0];
-            html_content = data[0].html;
+            this_page = data.data[0];
+            html_content = data.data[0].html;
             edit = false;
         }
         else {
@@ -169,9 +172,10 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 
     <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
     {@html html_content}
+    <button type="button" style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
   </div>
   </div>
-  <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={updatePage}>Save Changes</button>
+  <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={upsertPage}>Save Changes</button>
 {/if}
 {#if html_content}
 {@html html_content}
