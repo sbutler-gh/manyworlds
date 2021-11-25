@@ -35,16 +35,22 @@ let slug_taken = false;
 
     onMount(async () => {
 
-    // console.log(slug);
+      fetchCurrentSlugs();
 
-    const { data, error } = await supabase
-    .from('pages')
-    .select("slug")
+    });
 
-    if (data) {
-      current_slugs = [];
-        for (var i = 0; i < data.length; i++) {
-          current_slugs.push(data[i]["slug"])
+    async function fetchCurrentSlugs() {
+
+    const response = await fetch(`/fetchcurrentslugs`, {
+            method: 'get'
+            })
+
+    if (response.ok) {
+        let data = await response.json();
+        let data_array = data.data;
+        current_slugs = [];
+        for (var i = 0; i < data_array.length; i++) {
+          current_slugs.push(data_array[i]["slug"])
         }
         // current_slugs = data;
         console.log(current_slugs);
@@ -53,7 +59,7 @@ let slug_taken = false;
         console.log(error);
     }
 
-    });
+    }
 
     // async function createAccount(e) {
 
