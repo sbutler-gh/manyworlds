@@ -64,23 +64,6 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
         }
     }
 
-    // async function checkIfPageHasUser() {
-    //     const { data, error } = await supabase
-    //     .from('users_pages')
-    //     .select("*")
-    //     .match({user_id: $user_store?.id, page_id: this_page.id});
-
-    //     if (data?.length > 0) {
-    //         page_has_user = true;
-    //     }
-    //     else {
-    //         page_has_user = false;
-    //     }
-    //     // else if (error) {
-    //     //     console.log(error);
-    //     // }
-    // }
-
     async function updatePage() {
 
         const { data, error } = await supabase
@@ -102,13 +85,18 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
     }
 
     async function addUserToPage() {
-        const { data, error } = await supabase
-        .from('users_pages')
-        .insert([
-            { user_id: $user_store.id, page_id: this_page.id}
-        ])
 
-        if (data) {
+        let formData = new FormData();
+        formData.append('user_id', $user_store.id);
+        formData.append('page_id', this_page.id)
+
+        const response = await fetch(`/addusertopage`, {
+            method: 'post',
+            body: formData
+            })
+
+        if (response.ok) {
+            let data = await response.json();
             console.log(data);
             $user_pages_store.push({'page_id': this_page.id});
             page_has_user = true;
@@ -145,27 +133,6 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
         }
     }
 
-//     async function addEmail(e) {
-
-//         let formData = new FormData(e.target);
-
-//         console.log(formData.get('email'));
-
-//         const { data, error } = await supabase
-//         .from('signups')
-//         .insert([
-//             { email: formData.get('email')}
-//         ])
-
-//         if (data) {
-//         console.log(data);
-//         // e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-//         return data;
-//         }
-//         else {
-//         console.log(error);
-//         }
-// }
 </script>
 <script context="module">
     	export async function load({ page, fetch, session, stuff }) {
