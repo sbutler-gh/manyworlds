@@ -69,22 +69,19 @@ let slug_taken = false;
 
     let formData = new FormData(e.target);
     formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
+    formData.append('user_id', $user_store.id);
 
-    // let sanitized_html = DOMPurify.sanitize(formData.get('html'));
-    
-        const { data, error } = await supabase
-        .from('pages')
-        .insert([
-          { slug: formData.get('slug'), html: formData.get('sanitized_html'), user_id: $user_store.id}
-        ])
+        const response = await fetch(`/createnewpage`, {
+            method: 'post',
+            body: formData
+            })
       
-      if (data) {
+      if (response.ok) {
+        let data = await response.json();
         console.log(data);
         page_success = true;
-        addUserToPage(data[0].id)
-      //   e.target.id == 1 ? (email_success_1 = true) : (email_success_2 = true)
-        goto(`/${formData.get('slug')}`);
-        // return data;
+        addUserToPage(data.data[0].id)
+        goto(`/${data.data[0].slug}`);
       }
       else {
         console.log(error);
@@ -167,24 +164,6 @@ let slug_taken = false;
         console.log(error);
     }
 }
-
-    // async function addUserToPage(id) {
-    //   const { data, error } = await supabase
-    //     .from('users_pages')
-    //     .insert([
-    //         { user_id: $user_store.id, page_id: id}
-    //     ])
-
-    //     if (data) {
-    //         console.log(data);
-    //         // $user_pages_store = [];
-    //         $user_pages_store.push({'page_id': data[0].page_id});
-    //         console.log($user_pages_store);
-    //     }
-    //     else {
-    //         console.log(error);
-    //     }
-    // }
 
     function validateSlug() {
       console.log(your_slug);
