@@ -146,23 +146,45 @@ let slug_taken = false;
     }
     }
 
-    async function addUserToPage(id) {
-      const { data, error } = await supabase
-        .from('users_pages')
-        .insert([
-            { user_id: $user_store.id, page_id: id}
-        ])
+    async function addUserToPage(page_id) {
 
-        if (data) {
-            console.log(data);
-            // $user_pages_store = [];
-            $user_pages_store.push({'page_id': data[0].page_id});
-            console.log($user_pages_store);
-        }
-        else {
-            console.log(error);
-        }
+    let formData = new FormData();
+    formData.append('user_id', $user_store.id);
+    formData.append('page_id', page_id)
+
+    const response = await fetch(`/addusertopage`, {
+        method: 'post',
+        body: formData
+        })
+
+    if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        $user_pages_store.push({'page_id': data.data[0].page_id});
+        console.log($user_pages_store);
     }
+    else {
+        console.log(error);
+    }
+}
+
+    // async function addUserToPage(id) {
+    //   const { data, error } = await supabase
+    //     .from('users_pages')
+    //     .insert([
+    //         { user_id: $user_store.id, page_id: id}
+    //     ])
+
+    //     if (data) {
+    //         console.log(data);
+    //         // $user_pages_store = [];
+    //         $user_pages_store.push({'page_id': data[0].page_id});
+    //         console.log($user_pages_store);
+    //     }
+    //     else {
+    //         console.log(error);
+    //     }
+    // }
 
     function validateSlug() {
       console.log(your_slug);
