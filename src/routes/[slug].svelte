@@ -6,6 +6,7 @@ import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 import EditPageButton from "$lib/components/EditPageButton.svelte"
 import { user_store, user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
+import DOMPurify from 'dompurify';
 
 
 
@@ -33,6 +34,7 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
 
     function toggleEditPage() {
         edit ? edit = false : edit = true;
+        html_content = DOMPurify.sanitize(html_content);
     }
 
     async function fetchPageContent() {
@@ -67,7 +69,7 @@ import SignUpForm from "$lib/components/SignUpForm.svelte";
     async function upsertPage() {
 
         var formData = new FormData();
-        formData.append('html_content', html_content);
+        formData.append('html_content', DOMPurify.sanitize(html_content));
         formData.append('slug', slug);
 
         const response = await fetch(`/upsertpage`, {
