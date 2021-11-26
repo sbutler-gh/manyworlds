@@ -7,13 +7,23 @@ import EditPageButton from "$lib/components/EditPageButton.svelte"
 import { user_store, user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
 import DOMPurify from 'dompurify';
+import SignUpsTable from "$lib/components/SignUpsTable.svelte";
 
 
 
     export let slug;
+
     let this_page;
 
     let page_has_user;
+
+    let page_signups;
+    
+    let edit_sign_up_form;
+
+    edit_sign_up_form = false;
+
+    let test;
 
     let display_sign_up_form;
 
@@ -25,30 +35,40 @@ import DOMPurify from 'dompurify';
 
         console.log(slug);
 
-        fetchPageContent()
+        fetchUsersAndPages()
         .then(() => {
-            checkIfPageHasUser();
+            checkIfPageHasUser()
         })
-
-    });
+        .then(() => {
+                console.log(this_page?.user_id);
+                console.log($user_store?.id);
+                // if (this_page?.user_id == $user_store?.id) {
+                    fetchPageSignUps();
+                // }
+             })
+        });
 
     function toggleEditPage() {
         edit ? edit = false : edit = true;
         html_content = DOMPurify.sanitize(html_content);
     }
 
-    async function fetchPageContent() {
+    async function fetchUsersAndPages() {
 
-        const response = await fetch(`/fetchpagefromslug`, {
+        var formData = new FormData();
+        formData.append('slug', slug);
+        formData.append('user_id', $user_store?.id);
+
+        const response = await fetch(`/fetch_users_pages_from_slug`, {
             method: 'post',
-            body: slug
+            body: formData
             })
 
         if (response.ok) {
         let data = await response.json();
         console.log(data);
-        html_content = data.data[0].html;
-        this_page = data.data[0];
+        html_content = data.page.html;
+        this_page = data.page;
         }
 
         else {
@@ -64,6 +84,27 @@ import DOMPurify from 'dompurify';
         else {
             page_has_user = false;
         }
+    }
+
+    async function fetchPageSignUps() {
+
+        const { data, error } = await supabase
+        .from('pages')
+        .select(`*, users(email)`)
+        .eq('slug', slug)
+        // .select(`
+        //     name,
+        //     cities (
+        //     name
+        //     )
+        // `)
+
+  if (data) {
+      console.log(data);
+  }
+  else {
+      console.log(error);
+  }
     }
 
     async function upsertPage() {
@@ -138,6 +179,9 @@ import DOMPurify from 'dompurify';
         }
     }
 
+    function toggleEditSignUpForm () {
+        edit_sign_up_form ? edit_sign_up_form = false : edit_sign_up_form = true;
+    }
 </script>
 <script context="module">
     	export async function load({ page, fetch, session, stuff }) {
@@ -197,6 +241,34 @@ import DOMPurify from 'dompurify';
     <input name="password" placeholder="Enter a strong password" type="text">
     <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up</button>
 </form>
+{/if}
+<!-- {#if this_page?.user_id == $user_store?.id}
+<button type="button" style="margin: auto; display: block;" on:click|preventDefault={toggleEditSignUpForm}>Edit Sign-Up Form Fields</button>
+{#if edit_sign_up_form}
+<form class="guest-form" style="margin: auto; display: block;" on:submit|preventDefault={createUser}>
+
+    <h3>Sign Up Form Fields</h3>
+    <label>Form Field 1</label><br>
+    <input name="email" placeholder="hey@email.com" type="email"><br><br>
+
+    <label>Form Field 2</label><br>
+    <input name="password" placeholder="Enter a strong password" type="text"><br><br>
+
+    <label>Form Field 3</label><br>
+    <input name="email" placeholder="hey@email.com" type="email"><br><br>
+
+    <label>Form Field 4</label><br>
+    <input name="email" placeholder="hey@email.com" type="email"><br><br>
+
+    <label>Form Field 5</label><br>
+    <input name="email" placeholder="hey@email.com" type="email"><br><br>
+    <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Save Changes</button>
+</form>
+{/if}
+
+{/if} -->
+{#if Array.isArray(this_page?.users)}
+<SignUpsTable users={this_page.users}></SignUpsTable>
 {/if}
 
 <style>
