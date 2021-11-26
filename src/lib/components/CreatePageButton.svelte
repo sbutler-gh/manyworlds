@@ -1,1 +1,1 @@
-<a href="/new_page" style="text-decoration: none; cursor: pointer;"><button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">+ Create Your Own Page</button></a>
+<a href="/new_page" style="text-decoration: none; cursor: pointer; display: inline-block;"><button style="cursor: pointer; margin: auto; display: block;">+ Create Your Own Page</button></a>

@@ -39,13 +39,6 @@ import SignUpsTable from "$lib/components/SignUpsTable.svelte";
         .then(() => {
             checkIfPageHasUser()
         })
-        .then(() => {
-                console.log(this_page?.user_id);
-                console.log($user_store?.id);
-                // if (this_page?.user_id == $user_store?.id) {
-                    fetchPageSignUps();
-                // }
-             })
         });
 
     function toggleEditPage() {
@@ -84,27 +77,6 @@ import SignUpsTable from "$lib/components/SignUpsTable.svelte";
         else {
             page_has_user = false;
         }
-    }
-
-    async function fetchPageSignUps() {
-
-        const { data, error } = await supabase
-        .from('pages')
-        .select(`*, users(email)`)
-        .eq('slug', slug)
-        // .select(`
-        //     name,
-        //     cities (
-        //     name
-        //     )
-        // `)
-
-  if (data) {
-      console.log(data);
-  }
-  else {
-      console.log(error);
-  }
     }
 
     async function upsertPage() {
@@ -208,7 +180,13 @@ import SignUpsTable from "$lib/components/SignUpsTable.svelte";
 		// };
 	}
 </script>
+<div style="margin: auto;
+text-align: center;
+display: block;
+margin-top: 20px;">
+<a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
+</div>
 {#if this_page?.user_id == $user_store?.id}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={toggleEditPage}>Edit Page</button>
 {/if}
