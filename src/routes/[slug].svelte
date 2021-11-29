@@ -32,7 +32,26 @@ import { goto } from "$app/navigation";
 
     let html_content;
 
+    let original_path;
+
+$:      if (original_path && $page.path != original_path) reload_page();
+
+        async function reload_page() {
+                console.log('loading page');
+                const hash = window.location.hash;
+                console.log("reload_page", original_path, $page.path + hash);
+                await goto('/', {replaceState: true});
+                goto($page.path + hash, {replaceState: true});
+        }
+
+        // onMount(async () => {
+        //         original_path = $page.path;
+        //         // ...
+        // }
+
     onMount(() => {
+
+        original_path = $page.path;
 
         console.log(slug);
 
@@ -157,12 +176,12 @@ import { goto } from "$app/navigation";
     }
 
     function goToAbout() {
-        goto('/about');
-        slug = "about";
-        fetchUsersAndPages()
-        .then(() => {
-            checkIfPageHasUser()
-        });
+        // goto('/about');
+        // slug = "about";
+        // fetchUsersAndPages()
+        // .then(() => {
+        //     checkIfPageHasUser()
+        // });
     }
 </script>
 <script context="module">
@@ -194,7 +213,7 @@ import { goto } from "$app/navigation";
 text-align: center;
 display: block;
 margin-top: 20px;">
-<a href="/about" on:click|preventDefault={goToAbout} style="display: inline-block; margin-right: 30px;">About</a>
+<a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
 </div>
 {#if this_page?.user_id == $user_store?.id}
