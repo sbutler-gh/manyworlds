@@ -157,8 +157,12 @@ import { goto } from "$app/navigation";
     }
 
     function goToAbout() {
-        // slug = "about";
-        // console.log(slug);
+        goto('/about');
+        slug = "about";
+        fetchUsersAndPages()
+        .then(() => {
+            checkIfPageHasUser()
+        });
     }
 </script>
 <script context="module">
@@ -190,7 +194,7 @@ import { goto } from "$app/navigation";
 text-align: center;
 display: block;
 margin-top: 20px;">
-<a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
+<a href="/about" on:click|preventDefault={goToAbout} style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
 </div>
 {#if this_page?.user_id == $user_store?.id}
