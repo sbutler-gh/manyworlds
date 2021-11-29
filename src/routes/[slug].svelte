@@ -209,13 +209,13 @@ $:      if (original_path && $page.path != original_path) reload_page();
 		// };
 	}
 </script>
-<div style="margin: auto;
+<!-- <div style="margin: auto;
 text-align: center;
 display: block;
 margin-top: 20px;">
 <a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
-</div>
+</div> -->
 {#if this_page?.user_id == $user_store?.id}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={toggleEditPage}>Edit Page</button>
 {/if}
