@@ -8,6 +8,7 @@ import { user_store, user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
 import DOMPurify from 'dompurify';
 import SignUpsTable from "$lib/components/SignUpsTable.svelte";
+import { goto } from "$app/navigation";
 
 
 
@@ -154,6 +155,10 @@ import SignUpsTable from "$lib/components/SignUpsTable.svelte";
     function toggleEditSignUpForm () {
         edit_sign_up_form ? edit_sign_up_form = false : edit_sign_up_form = true;
     }
+
+    function goToAbout() {
+        goto('/about');
+    }
 </script>
 <script context="module">
     	export async function load({ page, fetch, session, stuff }) {
@@ -184,7 +189,7 @@ import SignUpsTable from "$lib/components/SignUpsTable.svelte";
 text-align: center;
 display: block;
 margin-top: 20px;">
-<a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
+<a href="/about" on:click={goToAbout} style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
 </div>
 {#if this_page?.user_id == $user_store?.id}
