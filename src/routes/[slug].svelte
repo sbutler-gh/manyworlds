@@ -246,7 +246,10 @@ margin-top: 20px;">
 
     <label>Password</label><br>
     <input name="password" placeholder="Enter a strong password" type="text">
+    <div>
     <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up</button>
+    <p>or <button style="cursor: pointer; margin: auto; display: block; display: inline;">Log In</button></p>
+    </div>
 </form>
 {/if}
 <!-- {#if this_page?.user_id == $user_store?.id}
