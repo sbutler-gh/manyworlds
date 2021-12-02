@@ -4,11 +4,13 @@ import supabase from "$lib/db.js";
 import { page } from "$app/stores";
 import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 import EditPageButton from "$lib/components/EditPageButton.svelte"
-import { user_store, user_pages_store } from "$lib/stores";
+import { user_store, user_pages_store, page_comments_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
 import DOMPurify from 'dompurify';
 import SignUpsTable from "$lib/components/SignUpsTable.svelte";
 import { goto } from "$app/navigation";
+import CommentForm from "$lib/components/CommentForm.svelte"
+import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
 
 
@@ -32,6 +34,8 @@ import { goto } from "$app/navigation";
 
     let html_content;
 
+    let parent_id;
+
     let original_path;
 
 $:      if (original_path && $page.path != original_path) reload_page();
@@ -49,17 +53,20 @@ $:      if (original_path && $page.path != original_path) reload_page();
         //         // ...
         // }
 
-    onMount(() => {
+    onMount(async() => {
 
         original_path = $page.path;
 
         console.log(slug);
 
         fetchUsersAndPages()
-        .then(() => {
+        .then(async() => {
             checkIfPageHasUser()
         })
-        });
+        .then(async() => {
+            fetchPageComments();
+        })
+    });
 
     function toggleEditPage() {
         edit ? edit = false : edit = true;
@@ -175,13 +182,28 @@ $:      if (original_path && $page.path != original_path) reload_page();
         edit_sign_up_form ? edit_sign_up_form = false : edit_sign_up_form = true;
     }
 
-    function goToAbout() {
-        // goto('/about');
-        // slug = "about";
-        // fetchUsersAndPages()
-        // .then(() => {
-        //     checkIfPageHasUser()
-        // });
+    async function fetchPageComments() {
+
+        var formData = new FormData();
+        formData.append('page_id', this_page?.id);
+
+        const response = await fetch(`/fetchpagecomments`, {
+            method: 'post',
+            body: formData
+            })
+
+        if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        $page_comments_store = data.data.reverse();
+        // console.log(data);
+        // html_content = data.page.html;
+        // this_page = data.page;
+        }
+
+        else {
+        console.log(error);
+        }
     }
 </script>
 <script context="module">
@@ -233,6 +255,7 @@ margin-top: 20px;">
 {#if html_content}
 {@html html_content}
 {/if}
+<div id="signUpCommentsSection">
 {#if $user_store?.id && page_has_user == false}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={addUserToPage}>Sign Up for Updates</button>
 {:else if $user_store?.id && page_has_user == true}
@@ -280,12 +303,32 @@ margin-top: 20px;">
 {#if Array.isArray(this_page?.users)}
 <SignUpsTable users={this_page.users}></SignUpsTable>
 {/if}
-
+<h3 style="text-align: center;">Add a Comment</h3>
+{#if $user_store?.id && page_has_user == true}
+<CommentForm user_id={$user_store?.id} page_id={this_page?.id} parent_id={parent_id}></CommentForm>
+{:else if page_has_user == false}
+<p style="text-align: center;">Sign up to this page to add comments.</p>
+{/if}
+{#if $page_comments_store}
+<CommentsDisplay></CommentsDisplay>
+{:else}
+<p>No comments yet</p>
+{/if}
+</div>
 <style>
     @media only screen and (max-width: 800px) {
         .guest-form {
             width: 100% !important;
             padding: 1rem;
+        }
+    }
+
+    @media only screen and (min-width: 801px) {
+
+        #signUpCommentsSection {
+            margin: auto;
+            display: block;
+            width: 500px;
         }
     }
 

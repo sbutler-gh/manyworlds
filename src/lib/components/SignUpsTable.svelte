@@ -8,14 +8,14 @@
     <table id="myTable" class="styled-table">
         <thead>
             <tr>
-                <th>user_id</th>
+                <!-- <th>user_id</th> -->
                 <th>email</th>
             </tr>
         </thead>
         <tbody>
         {#each users as user}
         <tr>
-            <td>{user.id}</td>
+            <!-- <td>{user.id}</td> -->
             <td>{user.email}</td>
         </tr>
         {/each}

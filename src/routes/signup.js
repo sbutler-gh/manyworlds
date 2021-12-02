@@ -10,13 +10,22 @@ export async function post(request) {
 
     // let request_parsed = JSON.parse(request);
 
-    console.log(request);
-    // let formData = await request.body.formData();
-    // console.log(request_parsed);
+    // console.log(request);
+    // // let formData = await request.body.formData();
+    // // console.log(request_parsed);
+    // let email = request.body.get("email");
+
+    console.log(request.body.get('email'));
+    console.log(request.body.get("email").substring(0, request.body.get("email").lastIndexOf("@")));
 
     let { user, error } = await supabase.auth.signUp({
       email: request.body.get("email"),
       password: request.body.get("password")
+    },
+    {
+    data: {
+      username: request.body.get("email").substring(0, request.body.get("email").lastIndexOf("@"))
+    }
     })
     
     if (error) {
