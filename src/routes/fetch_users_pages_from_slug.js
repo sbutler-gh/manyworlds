@@ -8,7 +8,7 @@ export async function post(request) {
 
     const { data, error } = await supabase
     .from('pages')
-    .select(`*, users(email)`)
+    .select(`*, users!users_pages(id, email), comments(*)`)
     .eq('slug', request.body.get('slug'))
     
     if (error) {
@@ -24,6 +24,8 @@ export async function post(request) {
     }
 
     else {
+
+      console.log(data);
 
         var page = {
             id: "",
@@ -44,6 +46,7 @@ export async function post(request) {
             page.slug = data[0].slug;
             page.created_at = data[0].created_at;
             page.users = data[0].users.length;
+            page.comments = data[0].comments;
         }
 
         console.log(page);

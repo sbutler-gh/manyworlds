@@ -63,9 +63,9 @@ $:      if (original_path && $page.path != original_path) reload_page();
         .then(async() => {
             checkIfPageHasUser()
         })
-        .then(async() => {
-            fetchPageComments();
-        })
+        // .then(async() => {
+        //     fetchPageComments();
+        // })
     });
 
     function toggleEditPage() {
@@ -89,6 +89,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
         console.log(data);
         html_content = data.page.html;
         this_page = data.page;
+        $page_comments_store = data.page.comments.reverse();
         }
 
         else {
@@ -194,8 +195,8 @@ $:      if (original_path && $page.path != original_path) reload_page();
 
         if (response.ok) {
         let data = await response.json();
-        console.log(data);
-        $page_comments_store = data.data.reverse();
+        console.log(data.data.reverse());
+        // $page_comments_store = data.data.reverse();
         // console.log(data);
         // html_content = data.page.html;
         // this_page = data.page;
