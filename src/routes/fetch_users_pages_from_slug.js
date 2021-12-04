@@ -8,7 +8,7 @@ export async function post(request) {
 
     const { data, error } = await supabase
     .from('pages')
-    .select(`*, users!users_pages(id, email), comments(*)`)
+    .select(`*, users!users_pages(email), comments(content, created_at, user_id(username))`)
     .eq('slug', request.body.get('slug'))
     
     if (error) {

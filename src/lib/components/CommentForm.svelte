@@ -25,7 +25,7 @@
       if (response.ok) {
         let data = await response.json();
         console.log(data);
-        data.data[0].users = {
+        data.data[0].user_id = {
           username: $user_store.user_metadata.username
         }
         $page_comments_store.unshift(data.data[0]);

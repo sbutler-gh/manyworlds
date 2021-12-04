@@ -4,7 +4,7 @@
 
 {#each $page_comments_store as comment}
 <div style="box-shadow: 0 0 20px rgb(0 0 0 / 15%); border-radius: 5px; margin: auto; margin-top: 24px; width: 80%; padding: 4px; text-align: left;">
-<p class="author">{comment.users?.username}</p>
+<p class="author">{comment.user_id.username}</p>
 <p class="datetime">{Date(comment.created_at).substring(0,33)}</p>
 <p class="body">{comment.content}</p>
 </div>
