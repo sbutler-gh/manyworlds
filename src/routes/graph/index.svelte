@@ -1,13 +1,20 @@
 <script>
+import { goto } from "$app/navigation";
+
     // import '../app.css';
     // import supabase from "$lib/db";
+
+
+    import DisplayWants from "$lib/components/DisplayWants.svelte";
+import { wants_table_store } from "$lib/stores";
+
 
     async function submitForm(e) {
         console.log(e.target);
 
         var formData = new FormData(e.target)
        
-        const response = await fetch(`/insert_want`, {
+        const response = await fetch(`/graph/insert_want`, {
             method: 'post',
             body: formData
             })
@@ -15,6 +22,10 @@
       if (response.ok) {
         let data = await response.json();
         console.log(data);
+        $wants_table_store.push(data.data[0]);
+        $wants_table_store.push(data.data[1]);
+        $wants_table_store = $wants_table_store;
+        goto(`/graph/${data.data[1].name}`);
         // data.data[0].user_id = {
         //   username: $user_store.user_metadata.username
         // }
@@ -39,6 +50,7 @@
 <br>
 <button>Submit</button>
 </form>
+<DisplayWants></DisplayWants>
 <style>
     * {
         display: block;

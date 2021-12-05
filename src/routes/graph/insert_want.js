@@ -32,7 +32,6 @@ export async function post(request) {
     }
 
     else {
-
       return {
           status: 200,
           body: {

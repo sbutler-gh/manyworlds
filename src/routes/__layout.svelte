@@ -38,7 +38,7 @@
     async function loadUserFromBrowserStorage() {
         if (localStorage.getItem('user')) {
             $user_store = JSON.parse(localStorage.getItem('user'));
-            console.log(localStorage.getItem('user'));
+            // console.log(localStorage.getItem('user'));
         }
     }
     
@@ -57,10 +57,12 @@
     
         if (localStorage.getItem('user')) {
             user_store.set(JSON.parse(localStorage.getItem('user')));
-            console.log(localStorage.getItem('user'));
+            // console.log(localStorage.getItem('user'));
             user = JSON.parse(localStorage.getItem('user'))
         }
     
+        // should return user data, including pages, recent wants, activity, etc?
+        // or just return user id, and then can fetch pages, wants, activity as it loads
         if (user?.id) {
     
                 const response = await fetch(`/loaduserpages`, {
