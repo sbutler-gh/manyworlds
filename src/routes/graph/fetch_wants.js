@@ -10,7 +10,7 @@ export async function post(request) {
     console.log('test 123')
 
     const { data, error } = await supabase
-    .from('wants')
+    .from('wants_new')
     .select(`*`)
     
     if (error) {

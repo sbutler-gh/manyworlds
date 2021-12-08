@@ -9,16 +9,16 @@ const supabase = createClient( import.meta.env.VITE_SUPABASE_URL,
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post(request) {
 
-    console.log(request.body);
+    // console.log(request.body);
 
-    let uuid = crypto.randomUUID();
-    console.log(uuid);
+    // let uuid = crypto.randomUUID();
+    // console.log(uuid);
 
     const { data, error } = await supabase
-    .from('wants')
+    .from('wants_new')
     .insert([
-    { name: request.body.get('in-order-to'), id: uuid},
-    { name: request.body.get('trying-to'), id: crypto.randomUUID(), in_order_to_parent: uuid},
+    // { name: request.body.get('in-order-to'), id: uuid},
+    { title: request.body.get('title'), description: request.body.get('description')},
     ])
 
     if (error) {
