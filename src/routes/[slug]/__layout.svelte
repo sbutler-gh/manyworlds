@@ -4,7 +4,7 @@
     <div style="margin: auto;
     text-align: center;
     display: block;
-    margin-top: 20px;">
+    margin-top: 50px;">
     <a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
     <CreatePageButton></CreatePageButton>
     </div>
