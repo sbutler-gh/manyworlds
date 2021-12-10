@@ -187,9 +187,11 @@ let title = "";
     
     </script>
     <div class="main">
+      <h3>New Page</h3>
     <form on:submit|preventDefault={submitForm}>
 
-      <label>Give a title for your initiative</label>
+      <!-- <label>Give a title for your initiative</label> -->
+      <label>Add a title</label>
       <input style="line-height: 1.2rem; font-size: 1.2rem; padding: 10px;" bind:value={title} name="title" placeholder="A tool to help people make progress together">
       <br>
       <br>
