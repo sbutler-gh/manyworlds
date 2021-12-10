@@ -6,7 +6,9 @@ const supabase = createClient( import.meta.env.VITE_SUPABASE_URL,
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post(request) {
 
-    const { data, error } = await supabase
+  // console.log('fetching_user_data');
+
+    let { data, error } = await supabase
     .from('pages')
     .select(`*, users!users_pages(email), comments(content, created_at, user_id(username))`)
     .eq('slug', request.body.get('slug'))
@@ -25,9 +27,9 @@ export async function post(request) {
 
     else {
 
-      console.log(data);
+      // console.log(data);
 
-        var page = {
+        let page = {
             id: "",
             slug: "",
             html: "",

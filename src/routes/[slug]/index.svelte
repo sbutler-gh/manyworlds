@@ -4,7 +4,7 @@ import supabase from "$lib/db.js";
 import { page } from "$app/stores";
 import CreatePageButton from "$lib/components/CreatePageButton.svelte"
 import EditPageButton from "$lib/components/EditPageButton.svelte"
-import { user_store, user_pages_store, page_comments_store } from "$lib/stores";
+// import { user_pages_store } from "$lib/stores";
 import SignUpForm from "$lib/components/SignUpForm.svelte";
 import DOMPurify from 'dompurify';
 import SignUpsTable from "$lib/components/SignUpsTable.svelte";
@@ -13,18 +13,15 @@ import CommentForm from "$lib/components/CommentForm.svelte"
 import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
 
-
     export let slug;
 
-    let this_page;
+    export let this_page;
 
-    let page_has_user;
+    export let page_has_user;
 
     let page_signups;
     
-    let edit_sign_up_form;
-
-    edit_sign_up_form = false;
+    let edit_sign_up_form = false;
 
     let test;
 
@@ -38,11 +35,11 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
     let original_path;
 
-$:      if (original_path && $page.path != original_path) reload_page();
+    $:  if (original_path && $page.path != original_path) reload_page();
 
         async function reload_page() {
                 console.log('loading page');
-                const hash = window.location.hash;
+                let hash = window.location.hash;
                 console.log("reload_page", original_path, $page.path + hash);
                 await goto('/', {replaceState: true});
                 goto($page.path + hash, {replaceState: true});
@@ -55,53 +52,16 @@ $:      if (original_path && $page.path != original_path) reload_page();
 
     onMount(async() => {
 
+        console.log(this_page);
+
         original_path = $page.path;
 
         console.log(slug);
-
-        fetchUsersAndPages()
-        .then(async() => {
-            checkIfPageHasUser()
-        })
     });
 
     function toggleEditPage() {
         edit ? edit = false : edit = true;
         html_content = DOMPurify.sanitize(html_content);
-    }
-
-    async function fetchUsersAndPages() {
-
-        var formData = new FormData();
-        formData.append('slug', slug);
-        formData.append('user_id', $user_store?.id);
-
-        const response = await fetch(`/fetch_users_pages_from_slug`, {
-            method: 'post',
-            body: formData
-            })
-
-        if (response.ok) {
-        let data = await response.json();
-        console.log(data);
-        // html_content = data.page.html;
-        this_page = data.page;
-        $page_comments_store = data.page.comments.reverse();
-        }
-
-        else {
-        console.log(error);
-        }
-    }
-
-    function checkIfPageHasUser() {
-        console.log($user_pages_store);
-        if ($user_pages_store.some(page => page.page_id == this_page.id)) {
-            page_has_user = true;
-        }
-        else {
-            page_has_user = false;
-        }
     }
 
     async function upsertPage() {
@@ -123,7 +83,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
 
         formData.append('html', html);
 
-        const response = await fetch(`/upsertpage`, {
+        let response = await fetch(`/upsertpage`, {
             method: 'post',
             body: formData
             })
@@ -146,7 +106,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
         formData.append('user_id', $user_store.id);
         formData.append('page_id', this_page.id)
 
-        const response = await fetch(`/addusertopage`, {
+        let response = await fetch(`/addusertopage`, {
             method: 'post',
             body: formData
             })
@@ -166,7 +126,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
 
         var formData = new FormData(e.target);
 
-        const response = await fetch(`/signup`, {
+        let response = await fetch(`/signup`, {
       method: 'post',
       body: formData
     })
@@ -194,12 +154,57 @@ $:      if (original_path && $page.path != original_path) reload_page();
     }
 </script>
 <script context="module">
+    import { get } from 'svelte/store'
+import { browser } from '$app/env';
+import { user_store, page_comments_store, user_pages_store } from "$lib/stores"
+
     	export async function load({ page, fetch, session, stuff }) {
-		const page_slug = `${page.params.slug}`;
+
+        let page_slug = `${page.params.slug}`;
+        let fetched_page;
+        let page_has_user;
+
+        if (browser) {
+        let user = JSON.parse(localStorage.getItem('user'))
+        console.log(user);
+
+        // var formData = {
+        //     slug: page_slug,
+        //     user_id: user?.id
+        // };
+        var formData = new FormData();
+        formData.append('slug', page_slug);
+        formData.append('user_id', user_store?.id);
+        // console.log(formData);
+        // console.log()
+
+        let response = await fetch(`./fetch_users_pages_from_slug`, {
+            method: 'post',
+            body: formData
+            })
+
+        if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        // html_content = data.page.html;
+        fetched_page = data.page;
+        page_comments_store.set(data.page.comments.reverse());
+        let user_pages_array = [];
+        user_pages_array = get(user_pages_store);
+        page_has_user = user_pages_array.some(page => page.page_id == fetched_page.id);
+        console.log(page_has_user);
+        }
+
+        else {
+        console.log(error);
+        }
+    }
 
 			return {
 				props: {
-					slug: page_slug
+                    this_page: fetched_page,
+                    slug: page_slug,
+                    page_has_user: page_has_user
 				}
 			};
 		// const res = await fetch(url);
@@ -227,13 +232,18 @@ margin-top: 20px;">
 </div> -->
 <h3>{this_page?.title}</h3>
 
-
+<a style="display: block; margin-left: auto; width: fit-content; margin-bottom:10px;" href="https://meet.jit.si/{this_page?.slug}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
+    <line x1="10" y1="14" x2="20" y2="4" />
+    <polyline points="15 4 20 4 20 9" />
+  </svg>Video/Voice Room</a>
 <div style="position: relative;">
     
     {#if !edit}
     <div class="html_content">{@html this_page?.html}</div>
     {#if this_page?.user_id == $user_store?.id}
-    <svg on:click={() => {edit ? edit = false : edit = true}} style="position: absolute; top: 0; right: 0;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <svg on:click={() => {edit ? edit = false : edit = true}} style="position: absolute; top: 0; right: 0; cursor: pointer;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
         <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
         <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
