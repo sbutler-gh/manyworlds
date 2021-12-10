@@ -16,7 +16,7 @@ export async function post(request) {
 
     const { data, error } = await supabase
     .from('wants_new')
-    .update({ description: request.body.get('description')})
+    .update({ html: request.body.get('description'), markdown: request.body.get('markdown')})
     .match({id: request.body.get('id')})
 
     if (error) {

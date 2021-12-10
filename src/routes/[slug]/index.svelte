@@ -63,9 +63,6 @@ $:      if (original_path && $page.path != original_path) reload_page();
         .then(async() => {
             checkIfPageHasUser()
         })
-        // .then(async() => {
-        //     fetchPageComments();
-        // })
     });
 
     function toggleEditPage() {
@@ -87,7 +84,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
         if (response.ok) {
         let data = await response.json();
         console.log(data);
-        html_content = data.page.html;
+        // html_content = data.page.html;
         this_page = data.page;
         $page_comments_store = data.page.comments.reverse();
         }
@@ -110,8 +107,21 @@ $:      if (original_path && $page.path != original_path) reload_page();
     async function upsertPage() {
 
         var formData = new FormData();
-        formData.append('html_content', DOMPurify.sanitize(html_content));
-        formData.append('slug', slug);
+        // formData.append('html_content', DOMPurify.sanitize(html_content));
+        // formData.append('html_content', DOMPurify.sanitize(html_content));
+        // formData.append('slug', slug);
+        formData.append('id', this_page.id);
+        formData.append('markdown', this_page.markdown);
+        
+        let html = this_page.markdown.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
+		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // h2 tag
+		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
+		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
+		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
+        .replace(/\r\n|\r|\n/gim, '<br>') // line breaks
+        .replace(/\[([^\[]+)\](\(([^)]*))/gim, '<a href="$3">$1</a>');
+
+        formData.append('html', html);
 
         const response = await fetch(`/upsertpage`, {
             method: 'post',
@@ -122,7 +132,7 @@ $:      if (original_path && $page.path != original_path) reload_page();
             let data = await response.json();
             console.log(data);
             this_page = data.data[0];
-            html_content = data.data[0].html;
+            // html_content = data.data[0].html;
             edit = false;
         }
         else {
@@ -182,30 +192,6 @@ $:      if (original_path && $page.path != original_path) reload_page();
     function toggleEditSignUpForm () {
         edit_sign_up_form ? edit_sign_up_form = false : edit_sign_up_form = true;
     }
-
-    async function fetchPageComments() {
-
-        var formData = new FormData();
-        formData.append('page_id', this_page?.id);
-
-        const response = await fetch(`/fetchpagecomments`, {
-            method: 'post',
-            body: formData
-            })
-
-        if (response.ok) {
-        let data = await response.json();
-        console.log(data.data.reverse());
-        // $page_comments_store = data.data.reverse();
-        // console.log(data);
-        // html_content = data.page.html;
-        // this_page = data.page;
-        }
-
-        else {
-        console.log(error);
-        }
-    }
 </script>
 <script context="module">
     	export async function load({ page, fetch, session, stuff }) {
@@ -239,23 +225,34 @@ margin-top: 20px;">
 <a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
 </div> -->
-{#if this_page?.user_id == $user_store?.id}
-<button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={toggleEditPage}>Edit Page</button>
-{/if}
-{#if edit}
-<div style="display: flex">
-    <textarea required name="html" bind:value={html_content} style="width: 50%; height: 400px;"></textarea><br>
+<h3>{this_page?.title}</h3>
 
-    <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
-    {@html html_content}
-    <button type="button" style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
-  </div>
-  </div>
-  <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={upsertPage}>Save Changes</button>
-{/if}
-{#if html_content}
-{@html html_content}
-{/if}
+
+<div style="position: relative;">
+    
+    {#if !edit}
+    <div class="html_content">{@html this_page?.html}</div>
+    {#if this_page?.user_id == $user_store?.id}
+    <svg on:click={() => {edit ? edit = false : edit = true}} style="position: absolute; top: 0; right: 0;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+        <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
+        <line x1="16" y1="5" x2="19" y2="8" />
+      </svg>
+    {/if}
+    {:else}
+    <em><a href="" on:click={() => {edit ? edit = false : edit = true}}>Cancel</a></em>
+    <form on:submit|preventDefault={upsertPage}>
+        <textarea name="description_markdown" style="height: 150px; width: 95%" bind:value={this_page.markdown}></textarea>
+        <br>
+        <button id="updateButton">Update Page</button>
+    </form>
+    {/if}
+
+
+    
+</div>
+
 <div id="signUpCommentsSection">
 {#if $user_store?.id && page_has_user == false}
 <button style="cursor: pointer; margin: auto; display: block; margin-top: 20px;" on:click|preventDefault={addUserToPage}>Sign Up for Updates</button>
@@ -317,6 +314,8 @@ margin-top: 20px;">
 {/if}
 </div>
 <style>
+    .html_content{max-width:650px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: light){.main{color: #444}} @media (prefers-color-scheme: dark){body{color:#ccc !important;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
+
     @media only screen and (max-width: 800px) {
         .guest-form {
             width: 100% !important;

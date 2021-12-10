@@ -33,6 +33,8 @@ export async function post(request) {
             html: "",
             user_id: "",
             created_at: "",
+            title: "",
+            markdown: "",
             users: [] 
         }
 
@@ -40,6 +42,8 @@ export async function post(request) {
             page = data[0];
         }
         else {
+            page.title = data[0].title;
+            page.markdown = data[0].markdown;
             page.html = data[0].html;
             page.id = data[0].id;
             page.user_id = data[0].user_id;

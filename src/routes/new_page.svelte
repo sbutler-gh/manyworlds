@@ -33,6 +33,17 @@ import DOMPurify from 'dompurify';
 
 let slug_taken = false;
 
+let title = "";
+        let preview = false;
+        let description = "";
+        $: description_html = description.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
+		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // h2 tag
+		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
+		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
+		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
+        .replace(/\r\n|\r|\n/gim, '<br>'); 
+
+
     onMount(async () => {
 
       fetchCurrentSlugs();
@@ -61,14 +72,20 @@ let slug_taken = false;
 
     }
 
-    // async function createAccount(e) {
-
-    // }
-
     async function createNewPage(e) {
 
     let formData = new FormData(e.target);
-    formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
+    // formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
+    formData.append('description_html', description_html);
+  
+    let slug = title.toLowerCase()
+           .replace(/[^\w ]+/g, '')
+           .replace(/ +/g, '-');
+
+    current_slugs.some(element => element == slug) ? slug = `${slug}-1` : null;
+
+    formData.append('slug', slug);
+
     formData.append('user_id', $user_store.id);
 
         const response = await fetch(`/createnewpage`, {
@@ -88,23 +105,6 @@ let slug_taken = false;
       }
 
     }
-
-  //   if (e.submitter.innerText == "Sign Up") {
-  //   const response = await fetch('/signup', {
-  //     method: 'post',
-  //     body: formData
-  //   })
-  //   if (response.ok) {
-  //   let data = await response.json();
-  //   console.log(data);
-  //   displaySignInForm = false;
-  //   auth_response = data;
-  //   $session = [];
-  //   $session.user = data.user;
-  //   $session.id = data.user.id;
-  //   $session.email = data.user.email;
-  //   }
-  // }
     
     async function submitForm(e) {
     
@@ -188,35 +188,34 @@ let slug_taken = false;
     </script>
     <div class="main">
     <form on:submit|preventDefault={submitForm}>
-        <label>Add a slug for your page.  (e.g. <strong>manyworlds.pages.dev/{your_slug}</strong>)</label><br>
-        <input required name="slug" bind:value={your_slug} placeholder="my-project-name" type="text" on:input={validateSlug} onkeypress="return event.charCode != 32">
-        {#if slug_taken}
-        <p style="color: red; font-size: 14px;">Already taken.  Try another.</p>
-        {/if}
-        <br>
-        <br>
-        <label>Your Page HTML</label>
-        {#if live_preview}
-        <button type="button" on:click={livePreviewToggle}>Hide Live Preview</button>
-        {:else}
-        <button type="button" on:click={livePreviewToggle}>Show Live Preview</button>
-        {/if}<br>
 
-        {#if html_preview}
-        {@html html_content}
-        {:else}
-        <div style="display: flex">
-        <textarea required name="html" bind:value={html_content} style="width: 50%; height: 400px;"></textarea><br>
-
-        {#if live_preview}
-        <div style="margin-left: 10px; border: solid 1px lightgrey; border-radius: 10px; padding: 5px;">
-        {@html html_content}
-        <button type="button" style="cursor: pointer; margin: auto; display: block; margin-top: 20px;">Sign Up for Updates</button>
+      <label>Give a title for your initiative</label>
+      <input style="line-height: 1.2rem; font-size: 1.2rem; padding: 10px;" bind:value={title} name="title" placeholder="A tool to help people make progress together">
+      <br>
+      <br>
+      <div style="display: flex">
+      <label>Describe your vision</label>
+      <button type="button" on:click={() => {preview ? (preview = false, document.getElementById('description_editor').style.display = "block") : (preview = true, document.getElementById('description_editor').style.display = "inline-flex") }}>
+          {#if preview}Hide{:else}Show{/if} Live Preview</button>
       </div>
-        {/if}
-        
-        </div>
-        {/if}
+      <div id="description_editor" style="width: 100%;">
+          <textarea style="height: 200px" name="description" placeholder="" bind:value={description}></textarea>
+          {#if preview}
+          <div style="width: 100%">
+          {@html description_html}
+          </div>
+          {/if}
+      </div>
+      <details><summary>Formatting help</summary>
+          <p>**bold** –> <strong>bold</strong></p>
+          <p>_italics_ / *italics* —> <em>italics</em></p>
+          <p>[A link](url) —> <a href="url" disabled>A link</a></p>
+          <span style="display: inline;"># Header 1 –> <h1 style="display: inline;">Header 1</h1></span>
+          <span style="display: inline-block;">## Header 2 –> <h2 style="display: inline-block;">Header 2</h2></span><br>
+          <span style="display: inline-block;">### Header 3 –> <h3 style="display: inline;">Header 3</h3></span><br><br>
+          <span style="display: inline-block;">#### Header 4 –> <h4 style="display: inline;">Header 4</h4></span>
+          </details>
+    <br>
 
         <br>
 
@@ -236,6 +235,49 @@ let slug_taken = false;
         {/if}
     </form>
     </div>
-<style>
+<!-- <style>
     .main{max-width:1200px;margin:40px auto;padding:0 10px;font:18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";color:#444}h1,h2,h3{line-height:1.2}@media (prefers-color-scheme: dark){body{color:#ccc;background:black}a:link{color:#5bf}a:visited{color:#ccf}}
+</style> -->
+<style>
+  * {
+      /* display: block; */
+      /* text-align: center; */
+      /* margin: auto; */
+      /* margin-top: 15px; */
+  }
+  form {
+      margin-top: 30px;
+      text-align: center;
+      max-width: 400px;
+      margin: auto;
+      text-align: left;
+      /* padding: 10px; */
+      /* background: #fafafa */
+  }
+  /* form label, form summary {
+      margin-bottom:10px; 
+      font-weight: 500;
+      font-size: 18px;
+
+  } */
+  form button {
+      margin-left: auto;
+      display: block;
+  }
+  label, textarea {
+      display: block;
+      margin-bottom: 3px;
+  }
+  input {
+      width: 100%;
+  }
+  textarea {
+      display: block;
+      width: 100%;
+      /* margin-top: 15px; */
+      height:30px;
+      padding: 10px;
+      font-size: 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
 </style>

@@ -5,7 +5,7 @@
         let title = "";
         let preview = false;
         let description = "";
-        $: description_preview = description.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
+        $: description_html = description.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
 		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // h2 tag
 		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
@@ -23,6 +23,7 @@
             console.log(e.target);
     
             var formData = new FormData(e.target)
+            formData.append('description_html', description_html);
     
             const response = await fetch(`/graph/insert_want_new`, {
                 method: 'post',
@@ -85,7 +86,7 @@
             <textarea style="height: 200px" name="description" placeholder="" bind:value={description}></textarea>
             {#if preview}
             <div style="width: 100%">
-            {@html description_preview}
+            {@html description_html}
             </div>
             {/if}
         </div>
@@ -142,7 +143,9 @@
             width: 100%;
             /* margin-top: 15px; */
             height:30px;
-            padding: 5px;
+            padding: 10px;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
     

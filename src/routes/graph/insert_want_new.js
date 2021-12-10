@@ -18,7 +18,7 @@ export async function post(request) {
     .from('wants_new')
     .insert([
     // { name: request.body.get('in-order-to'), id: uuid},
-    { title: request.body.get('title'), description: request.body.get('description')},
+    { title: request.body.get('title'), markdown: request.body.get('description'), html: request.body.get('description_html')},
     ])
 
     if (error) {

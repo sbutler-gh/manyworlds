@@ -11,9 +11,9 @@ export async function post(request) {
     const { data, error } = await supabase
     .from('pages')
     .update([
-      { "html": request.body.get('html_content')}
+      { "markdown": request.body.get('markdown'), html: request.body.get('html')}
     ])
-    .eq("slug", request.body.get('slug'))
+    .eq("id", request.body.get('id'))
     
     if (error) {
 
