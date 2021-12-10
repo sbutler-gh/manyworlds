@@ -191,7 +191,7 @@ let title = "";
       <h3>New Page</h3>
       <!-- <label>Give a title for your initiative</label> -->
       <label>Add a title</label>
-      <input style="line-height: 1.2rem; font-size: 1.2rem; padding: 10px;" bind:value={title} name="title" placeholder="A tool to help people make progress together">
+      <input style="line-height: 1.2rem; font-size: 1.2rem; padding: 10px;" bind:value={title} name="title" placeholder="e.g. A tool to help people make progress together">
       <br>
       <br>
       <div style="display: flex">
