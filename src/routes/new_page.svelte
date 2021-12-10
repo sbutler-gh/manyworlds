@@ -207,6 +207,7 @@ let title = "";
           </div>
           {/if}
       </div>
+      <p><strong>**bold**</strong> <em>*italic*</em> <a href="www.my.link" disabled="disabled" style="pointer-events: none;">link title</a> &lt;— [link title](www.my.link)</p>
       <details><summary>Formatting help</summary>
           <p>**bold** –> <strong>bold</strong></p>
           <p>_italics_ / *italics* —> <em>italics</em></p>
