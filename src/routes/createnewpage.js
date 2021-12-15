@@ -12,7 +12,7 @@ export async function post(request) {
   .from('pages')
   .insert([
   // { name: request.body.get('in-order-to'), id: uuid},
-  { user_id: request.body.get('user_id'), slug: request.body.get('slug'), title: request.body.get('title'), markdown: request.body.get('description'), html: request.body.get('description_html')},
+  { user_id: request.body.get('user_id'), slug: request.body.get('slug'), title: request.body.get('title'), markdown: request.body.get('markdown'), html: request.body.get('html')},
   ])
     
     if (error) {

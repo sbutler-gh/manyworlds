@@ -76,7 +76,8 @@ let title = "";
 
     let formData = new FormData(e.target);
     // formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
-    formData.append('description_html', description_html);
+    formData.append('markdown', DOMPurify.sanitize(description));
+    formData.append('html', DOMPurify.sanitize(description_html));
   
     let slug = title.toLowerCase()
            .replace(/[^\w ]+/g, '')
