@@ -17,7 +17,7 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
     export let this_page;
 
-    export let page_has_user;
+    let page_has_user;
 
     let page_signups;
     
@@ -35,7 +35,7 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
     let original_path;
 
-    let plain_text;
+    export let plain_text;
 
     $:  if (original_path && $page.path != original_path) reload_page();
 
@@ -61,7 +61,9 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
         this_page.html = DOMPurify.sanitize(this_page?.html);
         this_page.markdown = DOMPurify.sanitize(this_page?.markdown);
 
-        plain_text = this_page?.html.replace(/<[^>]*>/g, '');
+        page_has_user = $user_pages_store.some(page => page.page_id == this_page.id);
+
+        // plain_text = this_page?.html.replace(/<[^>]*>/g, '');
 
         console.log(slug);
     });
@@ -170,24 +172,36 @@ import { user_store, page_comments_store, user_pages_store } from "$lib/stores"
         let page_slug = `${page.params.slug}`;
         let fetched_page;
         let page_has_user;
+        let plain_text;
 
-        if (browser) {
-        let user = JSON.parse(localStorage.getItem('user'))
+        let user = get(user_pages_store);
         console.log(user);
+        console.log(user);
+
+        // if (browser) {
+        // let user = JSON.parse(localStorage.getItem('user'))
+        // console.log(user);
 
         // var formData = {
         //     slug: page_slug,
         //     user_id: user?.id
         // };
-        var formData = new FormData();
-        formData.append('slug', page_slug);
-        formData.append('user_id', user_store?.id);
-        // console.log(formData);
-        // console.log()
+        // var formData = new FormData();
+        // formData.append('slug', page_slug);
+        // formData.append('user_id', user_store?.id);
+
+        console.log(page_slug);
+        console.log(page_slug);
+        console.log(page.params.slug);
+        console.log(page.params.slug);
+        console.log(page.params.slug);
 
         let response = await fetch(`./fetch_users_pages_from_slug`, {
             method: 'post',
-            body: formData
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(page.params.slug)
             })
 
         if (response.ok) {
@@ -196,22 +210,19 @@ import { user_store, page_comments_store, user_pages_store } from "$lib/stores"
         // html_content = data.page.html;
         fetched_page = data.page;
         page_comments_store.set(data.page.comments.reverse());
-        let user_pages_array = [];
-        user_pages_array = get(user_pages_store);
-        page_has_user = user_pages_array.some(page => page.page_id == fetched_page.id);
         console.log(page_has_user);
+        plain_text = data.page.html.replace(/<[^>]*>/g, '');
         }
 
         else {
         console.log(error);
         }
-    }
 
 			return {
 				props: {
                     this_page: fetched_page,
                     slug: page_slug,
-                    page_has_user: page_has_user
+                    plain_text: plain_text
 				}
 			};
 		// const res = await fetch(url);
@@ -333,8 +344,8 @@ margin-top: 20px;">
 {/if}
 
 {/if} -->
-{#if Array.isArray(this_page?.users)}
-<SignUpsTable users={this_page.users}></SignUpsTable>
+{#if this_page?.user_id == $user_store?.id}
+<SignUpsTable page={this_page}></SignUpsTable>
 {/if}
 <h3 style="text-align: center;">Add a Comment</h3>
 {#if $user_store?.id && page_has_user == true}

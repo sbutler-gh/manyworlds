@@ -6,34 +6,7 @@
     import { get } from "./fetchcurrentslugs";
     
     import CreatePageButton from "$lib/components/CreatePageButton.svelte";
-    
-    // export let initialized;
-    
-    // onMount(async () => {
-    //     loadUserFromBrowserStorage()
-    //     .then(async() => {
-    
-    //         if ($user_store?.id) {
-    
-    //             const response = await fetch(`/loaduserpages`, {
-    //             method: 'post',
-    //             body: $user_store?.id
-    //             })
-    
-    //         if (response.ok) {
-    //         let data = await response.json();
-    //         console.log(data);
-    //         $user_pages_store = data.data;
-    //         }
-    
-    //         else {
-    //         console.log(error);
-    //         }
-    //         }
-    
-    //         return initialized = true;
-    //     });
-    // })
+
     
     async function loadUserFromBrowserStorage() {
         if (localStorage.getItem('user')) {

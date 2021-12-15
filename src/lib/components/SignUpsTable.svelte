@@ -1,5 +1,31 @@
 <script>
-    export let users;
+import { onMount } from "svelte";
+
+
+    let users;
+    export let page;
+
+    onMount(async() => {
+
+        let response = await fetch ('fetch_page_users_from_id', {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(page.id)
+        })
+
+        if (response.ok) {
+            let data = await response.json();
+            users = data.data;
+            console.log(users[0]);
+            // console.log(data);
+
+        }
+        else {
+            console.log(error);
+        }
+    })
 </script>
 
 <div style="margin: auto; display: block; width: 500px;">
@@ -13,12 +39,13 @@
             </tr>
         </thead>
         <tbody>
+        {#if users}
         {#each users as user}
         <tr>
-            <!-- <td>{user.id}</td> -->
-            <td>{user.email}</td>
+            <td>{user.user_id.email}</td>
         </tr>
         {/each}
+        {/if}
         </tbody>
     </table>
     </div>
