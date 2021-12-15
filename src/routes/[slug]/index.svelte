@@ -58,6 +58,9 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
         original_path = $page.path;
 
+        this_page.html = DOMPurify.sanitize(this_page?.html);
+        this_page.markdown = DOMPurify.sanitize(this_page?.markdown);
+
         plain_text = this_page?.html.replace(/<[^>]*>/g, '');
 
         console.log(slug);
@@ -75,7 +78,7 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
         // formData.append('html_content', DOMPurify.sanitize(html_content));
         // formData.append('slug', slug);
         formData.append('id', this_page.id);
-        formData.append('markdown', this_page.markdown);
+        formData.append('markdown', DOMPurify.sanitize(this_page.markdown));
         
         let html = this_page.markdown.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
 		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // h2 tag
@@ -85,7 +88,7 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
         .replace(/\r\n|\r|\n/gim, '<br>') // line breaks
         .replace(/\[([^\[]+)\](\(([^)]*))/gim, '<a href="$3">$1</a>');
 
-        formData.append('html', html);
+        formData.append('html', DOMPurify.sanitize(html));
 
         let response = await fetch(`/upsertpage`, {
             method: 'post',
