@@ -35,6 +35,8 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
     let original_path;
 
+    let plain_text;
+
     $:  if (original_path && $page.path != original_path) reload_page();
 
         async function reload_page() {
@@ -55,6 +57,8 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
         console.log(this_page);
 
         original_path = $page.path;
+
+        plain_text = this_page?.html.replace(/<[^>]*>/g, '');
 
         console.log(slug);
     });
@@ -230,6 +234,24 @@ margin-top: 20px;">
 <a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
 <CreatePageButton></CreatePageButton>
 </div> -->
+<svelte:head>
+<title>{this_page?.title}</title>
+<meta name="description" content="{plain_text}"/>
+
+<meta property="og:title" content="{this_page?.title}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{$page.path}" />
+<meta property="og:description" content="{plain_text}"/>
+<meta property="og:image" content="">
+
+<!-- <meta name="twitter:card" content="summary_large_image"> -->
+<meta property="twitter:domain" content="manyworlds.pages.dev">
+<meta property="twitter:url" content="{$page.path}">
+<meta name="twitter:title" content="{this_page?.title}">
+<meta name="twitter:description" content="{plain_text}">
+<meta name="twitter:image" content="">
+
+</svelte:head>
 <h3>{this_page?.title}</h3>
 
 <a style="display: block; margin-left: auto; width: fit-content; margin-bottom:10px;" href="https://meet.jit.si/{this_page?.slug}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
