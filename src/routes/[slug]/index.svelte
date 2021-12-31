@@ -88,7 +88,7 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
 		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
         .replace(/\r\n|\r|\n/gim, '<br>') // line breaks
-        .replace(/\[([^\[]+)\](\(([^)]*))/gim, '<a href="$3">$1</a>');
+        .replace(/\[([^\[]+)\](\(([^)]*))\)/gim, '<a href="$3">$1</a>'); // anchor tags
 
         formData.append('html', DOMPurify.sanitize(html));
 

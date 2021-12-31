@@ -41,7 +41,9 @@ let title = "";
 		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
 		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
-        .replace(/\r\n|\r|\n/gim, '<br>'); 
+        .replace(/\r\n|\r|\n/gim, '<br>') // whitespaces
+        .replace(/\[([^\[]+)\](\(([^)]*))\)/gim, '<a href="$3">$1</a>'); // anchor tags
+
 
 
     onMount(async () => {
