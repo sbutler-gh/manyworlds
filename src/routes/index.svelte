@@ -35,7 +35,9 @@ async function fetchAllPages() {
   {#if pages}
   <h3>Pages to Explore</h3>
   {#each pages as page}
+  {#if !page.hidden}
   <a sveltekit:prefetch style="display: block; width: fit-content;" href="/{page.slug}">{page.slug}</a>
+  {/if}
   {/each}
   {/if}
 </div>

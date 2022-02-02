@@ -5,6 +5,7 @@
     text-align: center;
     display: block;
     margin-top: 50px;">
+    <a href="/" style="display: inline-block; margin-right: 30px;">Explore</a>
     <a href="/about" style="display: inline-block; margin-right: 30px;">About</a>
     <CreatePageButton></CreatePageButton>
     </div>
