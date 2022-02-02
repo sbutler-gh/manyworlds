@@ -58,8 +58,8 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
 
         original_path = $page.path;
 
-        this_page.html = DOMPurify.sanitize(this_page?.html);
-        this_page.markdown = DOMPurify.sanitize(this_page?.markdown);
+        // this_page.html = DOMPurify.sanitize(this_page?.html);
+        // this_page.markdown = DOMPurify.sanitize(this_page?.markdown);
 
         page_has_user = $user_pages_store.some(page => page.page_id == this_page.id);
 
@@ -80,14 +80,14 @@ import CommentsDisplay from "$lib/components/CommentsDisplay.svelte";
         // formData.append('html_content', DOMPurify.sanitize(html_content));
         // formData.append('slug', slug);
         formData.append('id', this_page.id);
-        formData.append('markdown', DOMPurify.sanitize(this_page.markdown));
+        // formData.append('markdown', DOMPurify.sanitize(this_page.markdown));
         
         let html = this_page.markdown.replace(/^### (.*$)/gim, '<h3>$1</h3>') // h3 tag
 		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // h2 tag
 		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
 		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
-        .replace(/\r\n|\r|\n/gim, '<br>') // line breaks
+        // .replace(/\r\n|\r|\n/gim, '<br>') // line breaks
         .replace(/\[([^\[]+)\](\(([^)]*))\)/gim, '<a href="$3">$1</a>'); // anchor tags
 
         formData.append('html', DOMPurify.sanitize(html));
@@ -266,7 +266,7 @@ margin-top: 20px;">
 <meta name="twitter:image" content="">
 
 </svelte:head>
-<h3>{this_page?.title}</h3>
+<!-- <h3>{this_page?.title}</h3> -->
 
 <a style="display: block; margin-left: auto; width: fit-content; margin-bottom:10px;" href="https://meet.jit.si/{this_page?.slug}"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

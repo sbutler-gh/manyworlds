@@ -41,7 +41,7 @@ let title = "";
 		.replace(/^# (.*$)/gim, '<h1>$1</h1>') // h1 tag
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // bold text
 		.replace(/\*(.*)\*/gim, '<i>$1</i>') // italic text
-        .replace(/\r\n|\r|\n/gim, '<br>') // whitespaces
+        // .replace(/\r\n|\r|\n/gim, '<br>') // whitespaces
         .replace(/\[([^\[]+)\](\(([^)]*))\)/gim, '<a href="$3">$1</a>'); // anchor tags
 
 
@@ -78,8 +78,10 @@ let title = "";
 
     let formData = new FormData(e.target);
     // formData.append('sanitized_html', DOMPurify.sanitize(formData.get('html')));
-    formData.append('markdown', DOMPurify.sanitize(description));
-    formData.append('html', DOMPurify.sanitize(description_html));
+    // formData.append('markdown', DOMPurify.sanitize(description));
+    // formData.append('html', DOMPurify.sanitize(description_html));
+    formData.append('markdown', description);
+    formData.append('html', description_html);
   
     let slug = title.toLowerCase()
            .replace(/[^\w ]+/g, '')
